@@ -1,805 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Top Secret for Travy Gravy</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Top Secret for Travy Gravy</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400;600&family=IM+Fell+English:ital@0;1&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400;600&family=IM+Fell+English:ital@0;1&family=Pinyon+Script&display=swap" rel="stylesheet">
 
-<style>
-  /* ---------- Base / Scene ---------- */
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html, body {
-    width: 100%;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body {
-    font-family: 'Cormorant Garamond', serif;
-    background:
-      radial-gradient(circle at 15% 20%, #ffe4ec 0%, transparent 45%),
-      radial-gradient(circle at 85% 80%, #fff4d6 0%, transparent 45%),
-      radial-gradient(circle at 50% 50%, #fff0f5 0%, #fde2e4 60%, #f8c8d4 100%);
-    background-attachment: fixed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    position: relative;
-  }
-
-  /* Floating petals in the background */
-  .petal {
-    position: fixed;
-    top: -20px;
-    width: 14px;
-    height: 14px;
-    background: radial-gradient(circle at 30% 30%, #ffd1dc, #f48fb1);
-    border-radius: 60% 40% 50% 50% / 60% 60% 40% 40%;
-    opacity: 0.6;
-    animation: fall linear infinite;
-    pointer-events: none;
-    z-index: 0;
-  }
-  @keyframes fall {
-    0%   { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
-    10%  { opacity: 0.7; }
-    100% { transform: translateY(110vh) translateX(40px) rotate(360deg); opacity: 0; }
-  }
-
-  /* ---------- Stage (holds tulips + envelope) ---------- */
-  .stage {
-    position: relative;
-    width: 100%;
-    max-width: 1100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 90vh;
-    z-index: 1;
-  }
-
-  /* ---------- Water (pond at the bottom) ---------- */
-  .water {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    height: 22vh;
-    z-index: 1;
-    pointer-events: none;
-    overflow: hidden;
-    background:
-      /* sunset/sky pink reflection at the very top of the water */
-      linear-gradient(180deg,
-        rgba(255, 200, 215, 0.55) 0%,
-        rgba(220, 215, 220, 0.55) 8%,
-        rgba(170, 215, 215, 0.75) 22%,
-        rgba(120, 195, 200, 0.92) 60%,
-        rgba(80,  165, 175, 1)   100%);
-    box-shadow: inset 0 14px 24px -10px rgba(255, 200, 215, 0.55);
-  }
-  /* Shimmer streaks on the water */
-  .water::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      repeating-linear-gradient(
-        100deg,
-        transparent 0 60px,
-        rgba(255, 255, 255, 0.07) 60px 64px,
-        transparent 64px 140px,
-        rgba(255, 255, 255, 0.05) 140px 142px
-      );
-    mix-blend-mode: screen;
-    animation: shimmer 9s linear infinite;
-  }
-  @keyframes shimmer {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-140px); }
-  }
-
-  /* The wavy water surface line */
-  .wave {
-    position: absolute;
-    top: -1px;
-    left: 0;
-    width: 200%;
-    height: 36px;
-    animation: waveMove 11s linear infinite;
-  }
-  .wave.back {
-    top: 14px;
-    opacity: 0.55;
-    animation-duration: 16s;
-    animation-direction: reverse;
-  }
-  @keyframes waveMove {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-  }
-
-  /* Sea otter floating */
-  .otter {
-    position: absolute;
-    bottom: 28%;
-    left: 50%;
-    width: 220px;
-    height: auto;
-    transform: translateX(-50%);
-    animation: bob 4s ease-in-out infinite alternate;
-    filter: drop-shadow(0 6px 10px rgba(0, 60, 75, 0.35));
-  }
-  @keyframes bob {
-    from { transform: translate(-52%, -2px) rotate(-3deg); }
-    to   { transform: translate(-48%, 6px) rotate(3deg); }
-  }
-  /* Water ripples under the otter */
-  .ripples {
-    position: absolute;
-    bottom: 18%;
-    left: 50%;
-    width: 260px;
-    height: 36px;
-    transform: translateX(-50%);
-    pointer-events: none;
-  }
-  .ripples::before, .ripples::after {
-    content: "";
-    position: absolute;
-    left: 50%; top: 50%;
-    width: 100%; height: 100%;
-    border: 1.5px solid rgba(255, 255, 255, 0.55);
-    border-radius: 50%;
-    transform: translate(-50%, -50%) scale(0.4);
-    opacity: 0;
-    animation: ripple 4.5s ease-out infinite;
-  }
-  .ripples::after { animation-delay: 2.2s; }
-  @keyframes ripple {
-    0%   { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
-    20%  { opacity: 0.7; }
-    100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
-  }
-
-  /* Tulips anchored above the waterline, stems reaching upward */
-  .tulip-left, .tulip-right {
-    position: fixed;
-    bottom: 18vh;   /* sit on the shore, just above the water */
-    width: 340px;
-    height: 84vh;
-    z-index: 2;
-    pointer-events: none;
-    transform-origin: 50% 100%;
-    animation: sway 6s ease-in-out infinite alternate;
-  }
-  .tulip-left  { left: 0; }
-  .tulip-right { right: 0; transform-origin: 50% 100%; animation-name: sway-right; animation-delay: -3s; }
-
-  @keyframes sway {
-    from { transform: rotate(-1.5deg); }
-    to   { transform: rotate(1.5deg); }
-  }
-  @keyframes sway-right {
-    from { transform: scaleX(-1) rotate(-1.5deg); }
-    to   { transform: scaleX(-1) rotate(1.5deg); }
-  }
-
-  /* ---------- Envelope wrapper ---------- */
-  .envelope-wrap {
-    perspective: 1600px;
-    margin: 0 30px;
-    position: relative;
-  }
-
-  .envelope {
-    position: relative;
-    width: 600px;
-    height: 380px;
-    transform-style: preserve-3d;
-    transition: transform 1.1s cubic-bezier(.68,-0.2,.27,1.2);
-    cursor: pointer;
-  }
-
-  .envelope.flipped {
-    transform: rotateY(180deg);
-  }
-
-  .face {
-    position: absolute;
-    inset: 0;
-    border-radius: 8px;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    box-shadow:
-      0 30px 60px -20px rgba(120, 30, 60, 0.35),
-      0 12px 25px -10px rgba(120, 30, 60, 0.25),
-      inset 0 0 0 1px rgba(255,255,255,0.4);
-  }
-
-  /* ---------- Front of envelope ---------- */
-  .front {
-    background:
-      radial-gradient(ellipse at 12% 18%, rgba(140, 90, 40, 0.10) 0%, transparent 24%),
-      radial-gradient(ellipse at 88% 82%, rgba(110, 70, 30, 0.10) 0%, transparent 22%),
-      linear-gradient(135deg, #faf2dd 0%, #f1e3bf 60%, #e7d4a1 100%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    transition: transform .35s ease, box-shadow .35s ease;
-  }
-  .envelope:not(.flipped):hover .front {
-    transform: translateY(-6px);
-    box-shadow:
-      0 40px 70px -20px rgba(70, 40, 20, 0.55),
-      0 18px 30px -10px rgba(70, 40, 20, 0.4),
-      0 0 0 2px rgba(220, 190, 130, 0.7);
-  }
-
-  /* Decorative paper-edge lines */
-  .front::before {
-    content: "";
-    position: absolute;
-    inset: 16px;
-    border: 1px dashed rgba(120, 70, 30, 0.45);
-    border-radius: 3px;
-    pointer-events: none;
-  }
-  .front::after {
-    content: "";
-    position: absolute;
-    inset: 22px;
-    border: 1px solid rgba(120, 70, 30, 0.2);
-    border-radius: 2px;
-    pointer-events: none;
-  }
-
-  .front .to {
-    font-family: 'Pinyon Script', 'Dancing Script', cursive;
-    font-size: 56px;
-    color: #5a2618;
-    margin-bottom: 10px;
-    text-shadow: 0 1px 0 rgba(255,245,220,0.7);
-    line-height: 1;
-  }
-  .front .open-after {
-    font-family: 'IM Fell English', 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 24px;
-    color: #6a3320;
-    letter-spacing: 0.5px;
-  }
-  .front .hint {
-    margin-top: 22px;
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 13px;
-    color: #7a4a30;
-    opacity: 0.75;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-  }
-
-  /* Wax seal */
-  .wax-seal {
-    position: absolute;
-    bottom: 38px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    background:
-      radial-gradient(circle at 30% 30%, #ff7a8a 0%, #c1273f 55%, #7d1024 100%);
-    box-shadow:
-      0 6px 14px rgba(125, 16, 36, 0.55),
-      inset 0 -4px 8px rgba(0,0,0,0.25),
-      inset 0 4px 8px rgba(255,255,255,0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Dancing Script', cursive;
-    color: #fff5f5;
-    font-size: 30px;
-    font-weight: 700;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-  }
-  .wax-seal::before {
-    content: "";
-    position: absolute;
-    inset: 4px;
-    border-radius: 50%;
-    border: 1px dashed rgba(255, 245, 245, 0.5);
-  }
-
-  /* Corner stamp */
-  .stamp {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    width: 64px;
-    height: 78px;
-    background: #fff8f0;
-    border: 2px dashed #d49aab;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: rotate(6deg);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
-  .stamp svg { width: 70%; height: 70%; }
-
-  /* ---------- Back of envelope (flap side) ---------- */
-  .back {
-    background: linear-gradient(135deg, #f5e6c2 0%, #e6d29a 100%);
-    transform: rotateY(180deg);
-    overflow: visible;
-  }
-  /* Bottom body of envelope */
-  .back .body {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #efdca8 0%, #d9bf80 100%);
-    border-radius: 8px;
-    z-index: 1;
-  }
-  /* Side folds for realism */
-  .back .body::before,
-  .back .body::after {
-    content: "";
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 50%;
-    background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.05) 50%);
-  }
-  .back .body::before { left: 0;  border-right: 1px solid rgba(255,255,255,0.4); }
-  .back .body::after  { right: 0; transform: scaleX(-1); border-right: 1px solid rgba(255,255,255,0.4); }
-
-  /* The triangular flap */
-  .flap {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 70%;
-    background: linear-gradient(180deg, #ecd9a4 0%, #d4b677 100%);
-    clip-path: polygon(0 0, 100% 0, 50% 100%);
-    transform-origin: top center;
-    transition: transform 1s cubic-bezier(.68,-0.05,.27,1.1);
-    z-index: 5;
-    box-shadow: 0 4px 10px rgba(60,40,20,0.18);
-  }
-  .envelope.open .flap {
-    transform: rotateX(180deg);
-  }
-
-  /* Front "lip" of envelope pocket (in front of the letter) */
-  .pocket {
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 100%;
-    height: 55%;
-    background: linear-gradient(180deg, #d4b677 0%, #b8985a 100%);
-    clip-path: polygon(0 30%, 100% 30%, 100% 100%, 0 100%);
-    z-index: 7;
-    border-radius: 0 0 8px 8px;
-    box-shadow: inset 0 4px 8px rgba(60,40,20,0.2);
-  }
-
-  /* ---------- Letter that slides up ---------- */
-  .letter {
-    position: absolute;
-    top: 12%;
-    left: 8%;
-    width: 84%;
-    height: 76%;
-    background:
-      repeating-linear-gradient(
-        to bottom,
-        transparent 0px,
-        transparent 26px,
-        rgba(180, 120, 140, 0.18) 27px
-      ),
-      linear-gradient(180deg, #fffdf6 0%, #fbf3e1 100%);
-    border-radius: 4px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-    z-index: 6;
-    transform: translateY(0) scale(0.96);
-    opacity: 0;
-    transition: opacity .4s ease;
-    overflow: hidden;
-    padding: 18px;
-  }
-  .letter::before {
-    content: "";
-    position: absolute;
-    left: 26px; top: 0; bottom: 0;
-    width: 1px;
-    background: rgba(200, 80, 110, 0.35);
-  }
-  .envelope.open .letter {
-    opacity: 1;
-  }
-
-  /* ---------- Full letter view (after opening) ---------- */
-  .letter-page {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: safe center;
-    justify-content: safe center;
-    padding: 60px 20px 60px;
-    background: rgba(255, 240, 245, 0.55);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .6s ease;
-    z-index: 50;
-    overflow-y: auto;
-  }
-  .letter-page.visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .paper {
-    position: relative;
-    margin: auto;
-    width: min(780px, 94vw);
-    background:
-      /* subtle stains and aging blotches */
-      radial-gradient(ellipse at 10% 12%, rgba(140, 90, 40, 0.10) 0%, transparent 22%),
-      radial-gradient(ellipse at 88% 18%, rgba(140, 90, 40, 0.08) 0%, transparent 18%),
-      radial-gradient(ellipse at 20% 88%, rgba(110, 70, 30, 0.10) 0%, transparent 24%),
-      radial-gradient(ellipse at 92% 78%, rgba(110, 70, 30, 0.09) 0%, transparent 22%),
-      /* fibrous noise via tiny dots */
-      radial-gradient(circle at 12% 30%, rgba(120, 80, 40, 0.06) 0.5px, transparent 1px),
-      /* main parchment tone */
-      linear-gradient(180deg, #f5e6c4 0%, #ecd8a9 50%, #e6cf9a 100%);
-    padding: 72px 64px 80px;
-    border-radius: 4px;
-    box-shadow:
-      0 40px 80px -30px rgba(70, 40, 20, 0.55),
-      0 15px 30px -10px rgba(70, 40, 20, 0.35),
-      inset 0 0 60px rgba(120, 70, 30, 0.18),
-      inset 0 0 0 1px rgba(140, 90, 40, 0.25);
-    transform: translateY(40px) scale(0.95);
-    transition: transform .8s cubic-bezier(.2,.8,.2,1) .2s;
-    overflow: hidden;
-    /* deckled, uneven vintage edge */
-    clip-path: polygon(
-      0% 1.2%, 2% 0%, 8% 0.6%, 16% 0.2%, 24% 0.8%, 34% 0%, 44% 0.6%,
-      54% 0.1%, 64% 0.7%, 74% 0.2%, 84% 0.8%, 92% 0.3%, 98% 0.9%, 100% 0%,
-      99.4% 8%, 100% 18%, 99.2% 28%, 99.8% 40%, 99.3% 52%, 99.9% 64%,
-      99.2% 76%, 99.8% 86%, 99.4% 94%, 100% 100%,
-      94% 99.4%, 86% 99.9%, 76% 99.3%, 66% 99.8%, 56% 99.2%, 46% 99.9%,
-      36% 99.3%, 26% 99.8%, 16% 99.2%, 8% 99.9%, 2% 99.4%, 0% 100%,
-      0.6% 92%, 0.2% 82%, 0.8% 70%, 0.1% 58%, 0.7% 46%, 0.2% 34%,
-      0.8% 22%, 0.3% 12%
-    );
-  }
-  .letter-page.visible .paper {
-    transform: translateY(0) scale(1);
-  }
-
-  /* Inner decorative double-line border (old-fashioned frame) */
-  .paper::before {
-    content: "";
-    position: absolute;
-    inset: 26px;
-    border: 1px solid rgba(120, 70, 30, 0.45);
-    border-radius: 2px;
-    pointer-events: none;
-  }
-  .paper::after {
-    content: "";
-    position: absolute;
-    inset: 32px;
-    border: 1px solid rgba(120, 70, 30, 0.28);
-    border-radius: 2px;
-    pointer-events: none;
-  }
-
-  /* Decorative ornament above title */
-  .ornament {
-    text-align: center;
-    color: #7a3a22;
-    font-family: 'IM Fell English', serif;
-    font-size: 28px;
-    letter-spacing: 8px;
-    margin-bottom: 8px;
-    opacity: 0.7;
-  }
-
-  .paper h1 {
-    font-family: 'Pinyon Script', 'Dancing Script', cursive;
-    font-size: 58px;
-    color: #5a2618;
-    text-align: center;
-    margin-bottom: 28px;
-    font-weight: 400;
-    line-height: 1.1;
-    text-shadow: 0 1px 0 rgba(255, 240, 200, 0.6);
-  }
-  /* Flourish under the title */
-  .paper h1::after {
-    content: "❦";
-    display: block;
-    font-family: 'IM Fell English', serif;
-    font-size: 22px;
-    color: #7a3a22;
-    margin-top: 10px;
-    opacity: 0.8;
-  }
-
-  .paper .body {
-    font-family: 'IM Fell English', 'Cormorant Garamond', serif;
-    font-size: 19px;
-    line-height: 1.95;
-    color: #3a2418;
-    white-space: pre-wrap;
-    text-align: left;
-  }
-
-  /* ---------- Polaroid ---------- */
-  .polaroid {
-    display: block;
-    width: 240px;
-    margin: 36px auto 12px;
-    background: #fbf6ec;
-    padding: 14px 14px 0;
-    box-shadow:
-      0 12px 25px -8px rgba(60, 30, 10, 0.35),
-      0 4px 10px rgba(60, 30, 10, 0.2);
-    transform: rotate(-3deg);
-    transition: transform .4s ease;
-    border: 1px solid rgba(120, 80, 40, 0.15);
-  }
-  .polaroid:hover { transform: rotate(-1deg) scale(1.02); }
-
-  .polaroid .photo {
-    width: 100%;
-    height: 240px;
-    background:
-      linear-gradient(135deg, #ffe1ea 0%, #ffd0c2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .polaroid .photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .polaroid .photo .placeholder {
-    font-family: 'Caveat', cursive;
-    color: #b67a8a;
-    font-size: 18px;
-    text-align: center;
-    padding: 12px;
-  }
-
-  .polaroid .caption {
-    font-family: 'Caveat', cursive;
-    font-size: 22px;
-    color: #5e3742;
-    text-align: center;
-    padding: 14px 6px 18px;
-  }
-
-  /* Signature line */
-  .signature {
-    margin-top: 36px;
-    font-family: 'Pinyon Script', 'Dancing Script', cursive;
-    font-size: 38px;
-    color: #5a2618;
-    text-align: right;
-    line-height: 1.2;
-  }
-  .signature .yours {
-    display: block;
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 18px;
-    color: #5a3320;
-    margin-bottom: 4px;
-    text-align: right;
-  }
-
-  /* Close button on letter view */
-  .close-btn {
-    position: fixed;
-    top: 22px;
-    right: 22px;
-    background: rgba(255,255,255,0.85);
-    border: 1px solid rgba(180, 60, 90, 0.3);
-    color: #8a2a44;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 22px;
-    font-family: 'Cormorant Garamond', serif;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-    transition: transform .2s ease, background .2s ease;
-    z-index: 60;
-  }
-  .close-btn:hover { transform: rotate(90deg); background: #fff; }
-
-  /* ---------- Tulip head wilt animation ---------- */
-  .tulip-head {
-    transition: rotate .5s ease, translate .5s ease, opacity .5s ease;
-  }
-  body.wilt .tulip-head {
-    animation: wilt 1.5s ease-in forwards;
-  }
-  @keyframes wilt {
-    0%   { translate: 0 0;     rotate: 0deg;   opacity: 1; }
-    30%  { translate: 0 6px;   rotate: 55deg;  opacity: 1; }
-    100% { translate: 0 110px; rotate: 140deg; opacity: 0; }
-  }
-
-  /* Falling petals on wilt */
-  .falling-petal {
-    position: fixed;
-    top: 30%;
-    width: 18px;
-    height: 18px;
-    border-radius: 60% 40% 70% 30% / 60% 60% 40% 40%;
-    z-index: 3;
-    pointer-events: none;
-    opacity: 0;
-    animation: petalFall 2s ease-in forwards;
-  }
-  @keyframes petalFall {
-    0%   { opacity: 0;   transform: translate(0, -20px) rotate(0deg); }
-    15%  { opacity: 0.95; }
-    100% { opacity: 0;   transform: translate(var(--dx, 60px), 70vh) rotate(540deg); }
-  }
-
-  /* ---------- Passcode modal ---------- */
-  .passcode-modal {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 70;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .4s ease;
-    background: rgba(40, 20, 30, 0.25);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-  .passcode-modal.visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  .passcode-card {
-    position: relative;
-    background:
-      radial-gradient(ellipse at 12% 18%, rgba(140, 90, 40, 0.10) 0%, transparent 24%),
-      radial-gradient(ellipse at 88% 82%, rgba(110, 70, 30, 0.10) 0%, transparent 22%),
-      linear-gradient(180deg, #faf2dd 0%, #f1e3bf 100%);
-    padding: 36px 44px 32px;
-    border-radius: 4px;
-    box-shadow:
-      0 30px 60px -20px rgba(70, 40, 20, 0.55),
-      0 12px 25px -10px rgba(70, 40, 20, 0.35),
-      inset 0 0 0 1px rgba(140, 90, 40, 0.3);
-    transform: translateY(20px) scale(0.96);
-    transition: transform .5s cubic-bezier(.2,.8,.2,1);
-    max-width: 92vw;
-  }
-  .passcode-modal.visible .passcode-card { transform: translateY(0) scale(1); }
-  .passcode-card::before {
-    content: "";
-    position: absolute;
-    inset: 10px;
-    border: 1px dashed rgba(120, 70, 30, 0.45);
-    border-radius: 3px;
-    pointer-events: none;
-  }
-  .passcode-label {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 22px;
-    color: #5a2618;
-    text-align: center;
-    margin-bottom: 22px;
-    letter-spacing: 0.5px;
-  }
-  .passcode-boxes {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-  }
-  .passcode-box {
-    width: 56px;
-    height: 74px;
-    text-align: center;
-    font-family: 'Pinyon Script', 'Dancing Script', cursive;
-    font-size: 46px;
-    background: rgba(255, 250, 235, 0.7);
-    border: 1px solid rgba(120, 70, 30, 0.45);
-    border-radius: 4px;
-    color: #5a2618;
-    outline: none;
-    box-shadow: inset 0 2px 6px rgba(120, 70, 30, 0.12);
-    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
-    caret-color: #8a3a22;
-  }
-  .passcode-box:focus {
-    border-color: #c1273f;
-    box-shadow: 0 0 0 3px rgba(193, 39, 63, 0.18), inset 0 2px 6px rgba(120, 70, 30, 0.12);
-    transform: translateY(-1px);
-  }
-  .passcode-card.error .passcode-box {
-    border-color: #c1273f;
-    animation: shake .45s ease;
-  }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-8px); }
-    40% { transform: translateX(8px); }
-    60% { transform: translateX(-6px); }
-    80% { transform: translateX(6px); }
-  }
-  .passcode-message {
-    text-align: center;
-    margin-top: 18px;
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 18px;
-    min-height: 24px;
-    letter-spacing: 1px;
-    color: #c1273f;
-    opacity: 0;
-    transition: opacity .25s ease;
-  }
-  .passcode-message.show { opacity: 1; }
-  .passcode-message.success { color: #4e7a3a; }
-
-  /* ---------- Responsive ---------- */
-  @media (max-width: 980px) {
-    .tulip-left, .tulip-right { width: 220px; }
-    .envelope { width: 460px; height: 300px; }
-    .front .to { font-size: 44px; }
-    .front .open-after { font-size: 20px; }
-  }
-  @media (max-width: 720px) {
-    .stage { flex-wrap: wrap; }
-    .tulip-left, .tulip-right { width: 140px; opacity: 0.85; }
-    .envelope { width: 340px; height: 230px; }
-    .front .to { font-size: 30px; }
-    .front .open-after { font-size: 18px; }
-    .wax-seal { width: 54px; height: 54px; font-size: 22px; bottom: 24px; }
-    .stamp { width: 50px; height: 60px; }
-    .paper { padding: 40px 28px 50px; }
-    .paper h1 { font-size: 38px; }
-    .paper .body { font-size: 17px; }
-  }
-</style>
+  <!-- Modular stylesheets — load order matters (base defines vars used later) -->
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/scene.css">
+  <link rel="stylesheet" href="styles/envelope.css">
+  <link rel="stylesheet" href="styles/letter-page.css">
+  <link rel="stylesheet" href="styles/passcode.css">
 </head>
+
 <body>
 
-<!-- Floating petals -->
+<!-- ============================================================
+     Ambient layer — gently drifting petals across the page
+     ============================================================ -->
 <div id="petals"></div>
 
-<!-- ========== PASSCODE MODAL ========== -->
+
+<!-- ============================================================
+     Passcode modal (shown when the envelope is clicked)
+     ============================================================ -->
 <div class="passcode-modal" id="passcodeModal" aria-hidden="true">
   <div class="passcode-card" id="passcodeCard">
     <div class="passcode-label">Enter passcode to unseal</div>
@@ -813,80 +42,73 @@
   </div>
 </div>
 
-<!-- ========== POND / WATER LAYER ========== -->
+
+<!-- ============================================================
+     Pond at the bottom of the viewport — waves, shimmer,
+     ripples, and the floating sea otter.
+     ============================================================ -->
 <div class="water" aria-hidden="true">
 
-  <!-- Animated water surface waves -->
+  <!-- Wavy surface lines, layered for depth -->
   <svg class="wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0 20
-             Q 75 4   150 20 T 300 20 T 450 20 T 600 20 T 750 20 T 900 20 T 1050 20 T 1200 20
-             L 1200 40 L 0 40 Z"
+    <path d="M0 20 Q 75 4 150 20 T 300 20 T 450 20 T 600 20 T 750 20 T 900 20 T 1050 20 T 1200 20 L 1200 40 L 0 40 Z"
           fill="rgba(255, 235, 230, 0.55)"/>
   </svg>
   <svg class="wave back" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0 22
-             Q 100 8  200 22 T 400 22 T 600 22 T 800 22 T 1000 22 T 1200 22
-             L 1200 40 L 0 40 Z"
+    <path d="M0 22 Q 100 8 200 22 T 400 22 T 600 22 T 800 22 T 1000 22 T 1200 22 L 1200 40 L 0 40 Z"
           fill="rgba(255, 255, 255, 0.45)"/>
   </svg>
 
-  <!-- Ripples under the otter -->
+  <!-- Ripples expand from beneath the otter -->
   <div class="ripples" aria-hidden="true"></div>
 
-  <!-- ========== SEA OTTER (floating on back with a shell) ========== -->
+  <!-- Sea otter floating on its back with a scallop shell -->
   <svg class="otter" viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
       <radialGradient id="otterFur" cx="50%" cy="35%" r="70%">
-        <stop offset="0%"  stop-color="#a87858"/>
-        <stop offset="55%" stop-color="#825536"/>
+        <stop offset="0%"   stop-color="#a87858"/>
+        <stop offset="55%"  stop-color="#825536"/>
         <stop offset="100%" stop-color="#5d3b22"/>
       </radialGradient>
       <radialGradient id="otterBelly" cx="50%" cy="55%" r="60%">
-        <stop offset="0%"  stop-color="#f4dab0"/>
+        <stop offset="0%"   stop-color="#f4dab0"/>
         <stop offset="100%" stop-color="#cda678"/>
       </radialGradient>
       <radialGradient id="shellGrad" cx="50%" cy="35%" r="65%">
-        <stop offset="0%"  stop-color="#fff3d8"/>
+        <stop offset="0%"   stop-color="#fff3d8"/>
         <stop offset="100%" stop-color="#d9a86c"/>
       </radialGradient>
     </defs>
 
-    <!-- Tail extending to the right (behind body) -->
+    <!-- Tail trailing right (behind body) -->
     <path d="M210 88 Q 260 86 268 78 Q 264 96 218 100 Z" fill="url(#otterFur)"/>
 
     <!-- Hind feet sticking up -->
     <ellipse cx="198" cy="60" rx="11" ry="16" fill="url(#otterFur)"/>
     <ellipse cx="218" cy="63" rx="10" ry="14" fill="url(#otterFur)"/>
-    <!-- Toe pads -->
     <circle cx="194" cy="48" r="1.8" fill="#4a2e18"/>
     <circle cx="200" cy="46" r="1.8" fill="#4a2e18"/>
     <circle cx="214" cy="51" r="1.6" fill="#4a2e18"/>
     <circle cx="220" cy="50" r="1.6" fill="#4a2e18"/>
 
-    <!-- Body (lying on back) -->
+    <!-- Body (lying on back) with cream belly -->
     <ellipse cx="135" cy="82" rx="88" ry="28" fill="url(#otterFur)"/>
-
-    <!-- Belly highlight (cream tummy) -->
     <ellipse cx="148" cy="80" rx="68" ry="20" fill="url(#otterBelly)"/>
 
-    <!-- Head -->
+    <!-- Head + cheek patch -->
     <ellipse cx="50" cy="70" rx="26" ry="23" fill="url(#otterFur)"/>
-    <!-- Lighter cheek/muzzle patch -->
     <ellipse cx="44" cy="76" rx="19" ry="14" fill="url(#otterBelly)" opacity="0.85"/>
 
     <!-- Ears -->
-    <ellipse cx="38" cy="51" rx="6" ry="5" fill="#5d3b22"/>
-    <ellipse cx="62" cy="51" rx="6" ry="5" fill="#5d3b22"/>
+    <ellipse cx="38" cy="51" rx="6" ry="5"   fill="#5d3b22"/>
+    <ellipse cx="62" cy="51" rx="6" ry="5"   fill="#5d3b22"/>
     <ellipse cx="38" cy="52" rx="3" ry="2.6" fill="#b08866"/>
     <ellipse cx="62" cy="52" rx="3" ry="2.6" fill="#b08866"/>
 
-    <!-- Closed peaceful eyes -->
+    <!-- Peaceful closed eyes, nose, smile -->
     <path d="M33 68 q4 -3.5 8 0" stroke="#2a1810" stroke-width="1.6" fill="none" stroke-linecap="round"/>
     <path d="M57 68 q4 -3.5 8 0" stroke="#2a1810" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-
-    <!-- Nose -->
     <ellipse cx="34" cy="78" rx="4" ry="3" fill="#2a1810"/>
-    <!-- Smile -->
     <path d="M32 84 q4 3.5 8 0" stroke="#2a1810" stroke-width="1.3" fill="none" stroke-linecap="round"/>
 
     <!-- Whiskers -->
@@ -896,110 +118,94 @@
     <!-- Paws holding the shell -->
     <ellipse cx="112" cy="66" rx="11" ry="9" fill="url(#otterFur)"/>
     <ellipse cx="168" cy="66" rx="11" ry="9" fill="url(#otterFur)"/>
-    <!-- Paw pads -->
     <circle cx="108" cy="62" r="1.6" fill="#3a2418"/>
     <circle cx="115" cy="60" r="1.6" fill="#3a2418"/>
     <circle cx="164" cy="62" r="1.6" fill="#3a2418"/>
     <circle cx="171" cy="60" r="1.6" fill="#3a2418"/>
 
-    <!-- Shell on the belly -->
+    <!-- Scallop shell resting on the belly -->
     <g transform="translate(140 66)">
       <ellipse cx="0" cy="2" rx="24" ry="14" fill="url(#shellGrad)" stroke="#9c7242" stroke-width="1.2"/>
-      <!-- Scallop ridges fanning out from the hinge -->
       <path d="M0 -10 Q -8 4 -22 2"  stroke="#9c7242" stroke-width="0.9" fill="none"/>
       <path d="M0 -10 Q -4 6 -12 12" stroke="#9c7242" stroke-width="0.9" fill="none"/>
       <path d="M0 -10 Q  0 6   0 14" stroke="#9c7242" stroke-width="0.9" fill="none"/>
       <path d="M0 -10 Q  4 6  12 12" stroke="#9c7242" stroke-width="0.9" fill="none"/>
       <path d="M0 -10 Q  8 4  22 2"  stroke="#9c7242" stroke-width="0.9" fill="none"/>
-      <!-- Hinge bump at the top -->
       <ellipse cx="0" cy="-10" rx="4" ry="2.5" fill="#b8854f"/>
-      <!-- Highlight -->
       <ellipse cx="-7" cy="-3" rx="7" ry="3.5" fill="#fff7e0" opacity="0.55"/>
     </g>
   </svg>
 </div>
 
+
+<!-- ============================================================
+     Main stage — tulips flanking the centered envelope.
+     The .tulip-head groups inside each SVG are targeted by the
+     wilt animation when the wrong passcode is entered.
+     ============================================================ -->
 <div class="stage">
 
-  <!-- ========== LEFT TULIPS — anchored at bottom, very tall ========== -->
+  <!-- ---------- LEFT TULIPS (yellow, pink, red) ---------- -->
   <svg class="tulip-left" viewBox="0 0 300 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
-      <linearGradient id="petalPink" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#ffb1c1"/>
-        <stop offset="100%" stop-color="#e94f6b"/>
-      </linearGradient>
-      <linearGradient id="petalRed" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#ff8c8c"/>
-        <stop offset="100%" stop-color="#b91d35"/>
-      </linearGradient>
-      <linearGradient id="petalYellow" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#fff3a8"/>
-        <stop offset="100%" stop-color="#f0a838"/>
-      </linearGradient>
-      <linearGradient id="stemGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#7cb96b"/>
-        <stop offset="100%" stop-color="#3a6f34"/>
-      </linearGradient>
-      <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#9bd58b"/>
-        <stop offset="100%" stop-color="#3f7d3a"/>
-      </linearGradient>
+      <linearGradient id="petalPink"   x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffb1c1"/><stop offset="100%" stop-color="#e94f6b"/></linearGradient>
+      <linearGradient id="petalRed"    x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff8c8c"/><stop offset="100%" stop-color="#b91d35"/></linearGradient>
+      <linearGradient id="petalYellow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff3a8"/><stop offset="100%" stop-color="#f0a838"/></linearGradient>
+      <linearGradient id="stemGrad"    x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7cb96b"/><stop offset="100%" stop-color="#3a6f34"/></linearGradient>
+      <linearGradient id="leafGrad"    x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9bd58b"/><stop offset="100%" stop-color="#3f7d3a"/></linearGradient>
     </defs>
 
-    <!-- TALL background tulip (yellow) — stems from bottom (y=900), head near top -->
+    <!-- Tall background tulip (yellow) -->
     <path d="M70 900 Q60 600 70 360 Q72 240 80 140" stroke="url(#stemGrad)" stroke-width="9" fill="none" stroke-linecap="round"/>
-    <!-- Long sweeping leaf -->
     <path d="M68 520 Q10 540 20 660 Q70 600 75 540 Z" fill="url(#leafGrad)"/>
     <path d="M72 380 Q120 360 115 460 Q80 430 73 400 Z" fill="url(#leafGrad)" opacity="0.92"/>
-    <!-- Big tulip head -->
     <g transform="translate(80 120)" class="tulip-head">
-      <path d="M0 60 Q-44 -20 0 -60 Q44 -20 0 60 Z" fill="url(#petalYellow)"/>
+      <path d="M0 60 Q-44 -20 0 -60 Q44 -20 0 60 Z"        fill="url(#petalYellow)"/>
       <path d="M-36 18 Q-58 -36 -16 -54 Q-4 -16 -36 18 Z" fill="url(#petalYellow)" opacity="0.88"/>
-      <path d="M36 18 Q58 -36 16 -54 Q4 -16 36 18 Z" fill="url(#petalYellow)" opacity="0.88"/>
+      <path d="M36 18 Q58 -36 16 -54 Q4 -16 36 18 Z"      fill="url(#petalYellow)" opacity="0.88"/>
       <ellipse cx="0" cy="-6" rx="12" ry="22" fill="#fff" opacity="0.22"/>
     </g>
 
-    <!-- MID-HEIGHT tulip (pink) -->
+    <!-- Mid-height tulip (pink) -->
     <path d="M170 900 Q175 700 168 520 Q165 420 172 320" stroke="url(#stemGrad)" stroke-width="10" fill="none" stroke-linecap="round"/>
     <path d="M170 600 Q235 615 225 720 Q175 680 170 620 Z" fill="url(#leafGrad)"/>
     <path d="M170 670 Q105 685 115 770 Q170 730 170 690 Z" fill="url(#leafGrad)" opacity="0.92"/>
-    <!-- Big pink tulip head -->
     <g transform="translate(172 290)" class="tulip-head">
-      <path d="M0 72 Q-54 -22 0 -72 Q54 -22 0 72 Z" fill="url(#petalPink)"/>
+      <path d="M0 72 Q-54 -22 0 -72 Q54 -22 0 72 Z"        fill="url(#petalPink)"/>
       <path d="M-42 22 Q-68 -42 -20 -64 Q-4 -20 -42 22 Z" fill="url(#petalPink)" opacity="0.9"/>
-      <path d="M42 22 Q68 -42 20 -64 Q4 -20 42 22 Z" fill="url(#petalPink)" opacity="0.9"/>
+      <path d="M42 22 Q68 -42 20 -64 Q4 -20 42 22 Z"      fill="url(#petalPink)" opacity="0.9"/>
       <ellipse cx="0" cy="-4" rx="14" ry="26" fill="#fff" opacity="0.2"/>
     </g>
 
-    <!-- SHORTER front tulip (red) -->
+    <!-- Shorter front tulip (red) -->
     <path d="M240 900 Q245 780 240 660 Q238 580 245 500" stroke="url(#stemGrad)" stroke-width="8" fill="none" stroke-linecap="round"/>
     <path d="M243 720 Q290 735 280 810 Q245 780 240 740 Z" fill="url(#leafGrad)"/>
     <g transform="translate(245 480)" class="tulip-head">
-      <path d="M0 58 Q-42 -18 0 -58 Q42 -18 0 58 Z" fill="url(#petalRed)"/>
+      <path d="M0 58 Q-42 -18 0 -58 Q42 -18 0 58 Z"        fill="url(#petalRed)"/>
       <path d="M-32 16 Q-52 -34 -14 -50 Q-4 -14 -32 16 Z" fill="url(#petalRed)" opacity="0.88"/>
-      <path d="M32 16 Q52 -34 14 -50 Q4 -14 32 16 Z" fill="url(#petalRed)" opacity="0.88"/>
+      <path d="M32 16 Q52 -34 14 -50 Q4 -14 32 16 Z"      fill="url(#petalRed)" opacity="0.88"/>
       <ellipse cx="0" cy="-4" rx="10" ry="20" fill="#fff" opacity="0.2"/>
     </g>
 
-    <!-- Tiny ground flowers along the bottom -->
+    <!-- Ground sprinkles + grass blades -->
     <circle cx="20"  cy="895" r="6" fill="#fff1a1"/>
     <circle cx="55"  cy="892" r="4" fill="#ffd6e1"/>
     <circle cx="110" cy="897" r="5" fill="#ffd6e1"/>
     <circle cx="200" cy="895" r="4" fill="#fff1a1"/>
     <circle cx="275" cy="897" r="5" fill="#ffd6e1"/>
-    <!-- Grass blades -->
-    <path d="M0 900 Q12 860 8 840" stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <path d="M30 900 Q42 855 38 830" stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M0 900 Q12 860 8 840"     stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M30 900 Q42 855 38 830"   stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
     <path d="M120 900 Q132 855 128 830" stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
     <path d="M210 900 Q222 855 218 830" stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
     <path d="M285 900 Q297 855 293 830" stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
   </svg>
 
-  <!-- ========== ENVELOPE ========== -->
+
+  <!-- ---------- ENVELOPE ---------- -->
   <div class="envelope-wrap">
     <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Click to open letter">
 
-      <!-- FRONT -->
+      <!-- Front (visible at rest) -->
       <div class="face front">
         <div class="stamp" aria-hidden="true">
           <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
@@ -1015,15 +221,13 @@
         <div class="wax-seal" aria-hidden="true">T</div>
       </div>
 
-      <!-- BACK (flap side) -->
+      <!-- Back (visible after the 3D flip) -->
       <div class="face back">
         <div class="body"></div>
 
-        <!-- Letter that peeks out -->
+        <!-- Letter card peeking out before the full view loads -->
         <div class="letter">
-          <div style="font-family:'Dancing Script', cursive; font-size:28px; color:#8a2a44; text-align:center; margin-top:8px;">
-            ♡
-          </div>
+          <div class="heart">♡</div>
         </div>
 
         <div class="pocket"></div>
@@ -1032,71 +236,57 @@
     </div>
   </div>
 
-  <!-- ========== RIGHT TULIPS (mirrored via CSS) ========== -->
+
+  <!-- ---------- RIGHT TULIPS (mirrored, colors rotated: red, yellow, pink) ---------- -->
   <svg class="tulip-right" viewBox="0 0 300 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
-      <linearGradient id="petalPink2" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#ffb1c1"/>
-        <stop offset="100%" stop-color="#e94f6b"/>
-      </linearGradient>
-      <linearGradient id="petalRed2" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#ff8c8c"/>
-        <stop offset="100%" stop-color="#b91d35"/>
-      </linearGradient>
-      <linearGradient id="petalYellow2" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#fff3a8"/>
-        <stop offset="100%" stop-color="#f0a838"/>
-      </linearGradient>
-      <linearGradient id="stemGrad2" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#7cb96b"/>
-        <stop offset="100%" stop-color="#3a6f34"/>
-      </linearGradient>
-      <linearGradient id="leafGrad2" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#9bd58b"/>
-        <stop offset="100%" stop-color="#3f7d3a"/>
-      </linearGradient>
+      <linearGradient id="petalPink2"   x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffb1c1"/><stop offset="100%" stop-color="#e94f6b"/></linearGradient>
+      <linearGradient id="petalRed2"    x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff8c8c"/><stop offset="100%" stop-color="#b91d35"/></linearGradient>
+      <linearGradient id="petalYellow2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff3a8"/><stop offset="100%" stop-color="#f0a838"/></linearGradient>
+      <linearGradient id="stemGrad2"    x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7cb96b"/><stop offset="100%" stop-color="#3a6f34"/></linearGradient>
+      <linearGradient id="leafGrad2"    x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9bd58b"/><stop offset="100%" stop-color="#3f7d3a"/></linearGradient>
     </defs>
 
-    <!-- TALL background tulip (red) -->
+    <!-- Tall background tulip (red) -->
     <path d="M70 900 Q60 600 70 360 Q72 240 80 140" stroke="url(#stemGrad2)" stroke-width="9" fill="none" stroke-linecap="round"/>
     <path d="M68 520 Q10 540 20 660 Q70 600 75 540 Z" fill="url(#leafGrad2)"/>
     <path d="M72 380 Q120 360 115 460 Q80 430 73 400 Z" fill="url(#leafGrad2)" opacity="0.92"/>
     <g transform="translate(80 120)" class="tulip-head">
-      <path d="M0 60 Q-44 -20 0 -60 Q44 -20 0 60 Z" fill="url(#petalRed2)"/>
+      <path d="M0 60 Q-44 -20 0 -60 Q44 -20 0 60 Z"        fill="url(#petalRed2)"/>
       <path d="M-36 18 Q-58 -36 -16 -54 Q-4 -16 -36 18 Z" fill="url(#petalRed2)" opacity="0.88"/>
-      <path d="M36 18 Q58 -36 16 -54 Q4 -16 36 18 Z" fill="url(#petalRed2)" opacity="0.88"/>
+      <path d="M36 18 Q58 -36 16 -54 Q4 -16 36 18 Z"      fill="url(#petalRed2)" opacity="0.88"/>
       <ellipse cx="0" cy="-6" rx="12" ry="22" fill="#fff" opacity="0.22"/>
     </g>
 
-    <!-- MID tulip (yellow) -->
+    <!-- Mid-height tulip (yellow) -->
     <path d="M170 900 Q175 700 168 520 Q165 420 172 320" stroke="url(#stemGrad2)" stroke-width="10" fill="none" stroke-linecap="round"/>
     <path d="M170 600 Q235 615 225 720 Q175 680 170 620 Z" fill="url(#leafGrad2)"/>
     <path d="M170 670 Q105 685 115 770 Q170 730 170 690 Z" fill="url(#leafGrad2)" opacity="0.92"/>
     <g transform="translate(172 290)" class="tulip-head">
-      <path d="M0 72 Q-54 -22 0 -72 Q54 -22 0 72 Z" fill="url(#petalYellow2)"/>
+      <path d="M0 72 Q-54 -22 0 -72 Q54 -22 0 72 Z"        fill="url(#petalYellow2)"/>
       <path d="M-42 22 Q-68 -42 -20 -64 Q-4 -20 -42 22 Z" fill="url(#petalYellow2)" opacity="0.9"/>
-      <path d="M42 22 Q68 -42 20 -64 Q4 -20 42 22 Z" fill="url(#petalYellow2)" opacity="0.9"/>
+      <path d="M42 22 Q68 -42 20 -64 Q4 -20 42 22 Z"      fill="url(#petalYellow2)" opacity="0.9"/>
       <ellipse cx="0" cy="-4" rx="14" ry="26" fill="#fff" opacity="0.2"/>
     </g>
 
-    <!-- SHORTER front tulip (pink) -->
+    <!-- Shorter front tulip (pink) -->
     <path d="M240 900 Q245 780 240 660 Q238 580 245 500" stroke="url(#stemGrad2)" stroke-width="8" fill="none" stroke-linecap="round"/>
     <path d="M243 720 Q290 735 280 810 Q245 780 240 740 Z" fill="url(#leafGrad2)"/>
     <g transform="translate(245 480)" class="tulip-head">
-      <path d="M0 58 Q-42 -18 0 -58 Q42 -18 0 58 Z" fill="url(#petalPink2)"/>
+      <path d="M0 58 Q-42 -18 0 -58 Q42 -18 0 58 Z"        fill="url(#petalPink2)"/>
       <path d="M-32 16 Q-52 -34 -14 -50 Q-4 -14 -32 16 Z" fill="url(#petalPink2)" opacity="0.88"/>
-      <path d="M32 16 Q52 -34 14 -50 Q4 -14 32 16 Z" fill="url(#petalPink2)" opacity="0.88"/>
+      <path d="M32 16 Q52 -34 14 -50 Q4 -14 32 16 Z"      fill="url(#petalPink2)" opacity="0.88"/>
       <ellipse cx="0" cy="-4" rx="10" ry="20" fill="#fff" opacity="0.2"/>
     </g>
 
-    <!-- Ground details -->
+    <!-- Ground sprinkles + grass blades -->
     <circle cx="20"  cy="895" r="6" fill="#fff1a1"/>
     <circle cx="55"  cy="892" r="4" fill="#ffd6e1"/>
     <circle cx="110" cy="897" r="5" fill="#ffd6e1"/>
     <circle cx="200" cy="895" r="4" fill="#fff1a1"/>
     <circle cx="275" cy="897" r="5" fill="#ffd6e1"/>
-    <path d="M0 900 Q12 860 8 840" stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <path d="M30 900 Q42 855 38 830" stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M0 900 Q12 860 8 840"     stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M30 900 Q42 855 38 830"   stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
     <path d="M120 900 Q132 855 128 830" stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
     <path d="M210 900 Q222 855 218 830" stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
     <path d="M285 900 Q297 855 293 830" stroke="#5a8f50" stroke-width="2" fill="none" stroke-linecap="round"/>
@@ -1104,7 +294,11 @@
 
 </div>
 
-<!-- ========== FULL LETTER VIEW (revealed after opening) ========== -->
+
+<!-- ============================================================
+     Full letter view — revealed after the envelope opens.
+     EDIT markers below mark the parts safe to customize.
+     ============================================================ -->
 <div class="letter-page" id="letterPage" aria-hidden="true">
   <button class="close-btn" id="closeBtn" aria-label="Close letter">×</button>
 
@@ -1113,23 +307,23 @@
     <!-- EDIT: Letter body (opening salutation + content) -->
     <div class="body">Tracy,
 
-I'm so SOOOOOOOOOO incredibly proud of you. I know how tough studying for MCAT was for you with everything you sacrificed 
-this semester, and all the sleep you lost. I know sometimes it felt insane and not worth it, but you're done 
-now and I have no doubt that you crushed it, probably even scored over a 520. 
+I'm so SOOOOOOOOOO incredibly proud of you. I know how tough studying for MCAT was for you with everything you sacrificed
+this semester, and all the sleep you lost. I know sometimes it felt insane and not worth it, but you're done
+now and I have no doubt that you crushed it, probably even scored over a 520.
 
 You are amazing, hardworking, resillient, breathtaking, and so so so smart, you actually mog me. I'm so luck you have you in my life,
-and to have witnessed you complete a huge milestone, that you're gonna look back to once you become the best doctor I know 
-(and that way I won't ever need to go to a doctor again). 
+and to have witnessed you complete a huge milestone, that you're gonna look back to once you become the best doctor I know
+(and that way I won't ever need to go to a doctor again).
 
-Now you get to go to Ireland!!!!! Eventhough I'm bummed I wont get to see you for almost another month, I'm 
-so excited for you, and jelous of all the places you'll get to visit, all the beer you're going to drink, and 
-OOOOOO MMMMMMMM GGGGGGGGGG THE FOOOD. You've most definetly earned this trip, and I hope you have the bestest time ever. 
-I need all the stories and the yap, I'm gonna be looking forward to that every night. 
+Now you get to go to Ireland!!!!! Eventhough I'm bummed I wont get to see you for almost another month, I'm
+so excited for you, and jelous of all the places you'll get to visit, all the beer you're going to drink, and
+OOOOOO MMMMMMMM GGGGGGGGGG THE FOOOD. You've most definetly earned this trip, and I hope you have the bestest time ever.
+I need all the stories and the yap, I'm gonna be looking forward to that every night.
 
-I would say I'm looking forward to the scenery in the pictures you take but I feel you'd lowkey ruin it 
-because the view would be nothing compared to you. 
+I would say I'm looking forward to the scenery in the pictures you take but I feel you'd lowkey ruin it
+because the view would be nothing compared to you.
 
-Again, I'm so proud of you! Everyone is! 
+Again, I'm so proud of you! Everyone is!
 I love you so much, and I can't wait to see you and give you the biggest hug!
 
 </div>
@@ -1140,7 +334,7 @@ I love you so much, and I can't wait to see you and give you the biggest hug!
       PBJ
     </div>
 
-    <!-- ========== POLAROID ========== -->
+    <!-- Polaroid photo -->
     <figure class="polaroid">
       <div class="photo">
         <!-- EDIT: Add photo src here -->
@@ -1148,195 +342,21 @@ I love you so much, and I can't wait to see you and give you the biggest hug!
       </div>
       <figcaption class="caption">
         <!-- EDIT: Polaroid caption -->
-        Wharf Pt. 2 Incoming, perhaps gelato + movie on Wharf? 
+        Wharf Pt. 2 Incoming, perhaps gelato + movie on Wharf?
       </figcaption>
     </figure>
 
   </article>
 </div>
 
-<script>
-  // ---------- Petal generator ----------
-  (function makePetals() {
-    const container = document.getElementById('petals');
-    const count = 18;
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('div');
-      p.className = 'petal';
-      p.style.left = Math.random() * 100 + 'vw';
-      p.style.animationDuration = (8 + Math.random() * 10) + 's';
-      p.style.animationDelay = (-Math.random() * 12) + 's';
-      const scale = 0.6 + Math.random() * 1.1;
-      p.style.transform = `scale(${scale})`;
-      const hues = ['#ffd1dc', '#ffc1c1', '#fff1a1', '#ffe0b2'];
-      p.style.background = `radial-gradient(circle at 30% 30%, ${hues[i % hues.length]}, #f48fb1)`;
-      container.appendChild(p);
-    }
-  })();
 
-  // ---------- Open sequence ----------
-  const envelope   = document.getElementById('envelope');
-  const letterPage = document.getElementById('letterPage');
-  const closeBtn   = document.getElementById('closeBtn');
-  let opened = false;
-
-  function openSequence() {
-    if (opened) return;
-    opened = true;
-
-    // 1) Flip the envelope to reveal the back
-    envelope.classList.add('flipped');
-
-    // 2) After flip completes, open the flap upward
-    setTimeout(() => envelope.classList.add('open'), 1100);
-
-    // 3) After the flap is open, reveal the full letter view
-    setTimeout(() => {
-      letterPage.classList.add('visible');
-      letterPage.setAttribute('aria-hidden', 'false');
-    }, 2200);
-  }
-
-  function closeLetter() {
-    letterPage.classList.remove('visible');
-    letterPage.setAttribute('aria-hidden', 'true');
-    // Reset so user can replay
-    setTimeout(() => {
-      envelope.classList.remove('open');
-      setTimeout(() => {
-        envelope.classList.remove('flipped');
-        opened = false;
-      }, 400);
-    }, 500);
-  }
-
-  // ---------- Passcode gate ----------
-  const CORRECT_PASSCODE = '1207';
-  const passcodeModal   = document.getElementById('passcodeModal');
-  const passcodeCard    = document.getElementById('passcodeCard');
-  const passcodeMessage = document.getElementById('passcodeMessage');
-  const passcodeBoxes   = Array.from(passcodeModal.querySelectorAll('.passcode-box'));
-  let checking = false;
-
-  function showPasscodeModal() {
-    if (opened) return;
-    passcodeBoxes.forEach(b => b.value = '');
-    passcodeMessage.textContent = '';
-    passcodeMessage.className = 'passcode-message';
-    passcodeCard.classList.remove('error');
-    passcodeModal.classList.add('visible');
-    passcodeModal.setAttribute('aria-hidden', 'false');
-    setTimeout(() => passcodeBoxes[0].focus(), 250);
-  }
-
-  function hidePasscodeModal() {
-    passcodeModal.classList.remove('visible');
-    passcodeModal.setAttribute('aria-hidden', 'true');
-  }
-
-  function dropFallingPetals(count) {
-    const colors = ['#ffb1c1', '#e94f6b', '#ff8c8c', '#fff3a8', '#f0a838', '#ffd6e1'];
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('div');
-      p.className = 'falling-petal';
-      // Drop them roughly from the tulip head positions on both sides
-      const fromLeftSide = Math.random() < 0.5;
-      const baseX = fromLeftSide ? (10 + Math.random() * 18) : (72 + Math.random() * 18);
-      p.style.left = baseX + 'vw';
-      p.style.top  = (8 + Math.random() * 35) + 'vh';
-      p.style.background = `radial-gradient(circle at 30% 30%, #fff, ${colors[i % colors.length]})`;
-      p.style.setProperty('--dx', ((Math.random() - 0.5) * 180) + 'px');
-      p.style.animationDelay = (Math.random() * 0.4) + 's';
-      p.style.animationDuration = (1.6 + Math.random() * 1.2) + 's';
-      document.body.appendChild(p);
-      setTimeout(() => p.remove(), 3200);
-    }
-  }
-
-  function checkPasscode() {
-    if (checking) return;
-    const code = passcodeBoxes.map(b => b.value).join('');
-    if (code.length < 4) return;
-    checking = true;
-
-    if (code === CORRECT_PASSCODE) {
-      passcodeMessage.textContent = '♡  Welcome  ♡';
-      passcodeMessage.classList.add('show', 'success');
-      setTimeout(() => {
-        hidePasscodeModal();
-        openSequence();
-        checking = false;
-      }, 700);
-    } else {
-      passcodeCard.classList.add('error');
-      passcodeMessage.textContent = 'Incorrect';
-      passcodeMessage.classList.add('show');
-      document.body.classList.add('wilt');
-      dropFallingPetals(22);
-
-      setTimeout(() => {
-        // Reset for another try
-        document.body.classList.remove('wilt');
-        passcodeCard.classList.remove('error');
-        passcodeBoxes.forEach(b => b.value = '');
-        passcodeMessage.classList.remove('show');
-        setTimeout(() => { passcodeMessage.textContent = ''; }, 300);
-        passcodeBoxes[0].focus();
-        checking = false;
-      }, 1800);
-    }
-  }
-
-  passcodeBoxes.forEach((box, idx) => {
-    box.addEventListener('input', (e) => {
-      const v = (e.target.value || '').replace(/\D/g, '').slice(-1);
-      e.target.value = v;
-      passcodeMessage.classList.remove('show');
-      passcodeCard.classList.remove('error');
-      if (v && idx < passcodeBoxes.length - 1) {
-        passcodeBoxes[idx + 1].focus();
-      }
-      if (passcodeBoxes.every(b => b.value)) {
-        checkPasscode();
-      }
-    });
-    box.addEventListener('keydown', (e) => {
-      if (e.key === 'Backspace' && !box.value && idx > 0) {
-        passcodeBoxes[idx - 1].focus();
-        passcodeBoxes[idx - 1].value = '';
-        e.preventDefault();
-      }
-      if (e.key === 'ArrowLeft'  && idx > 0) passcodeBoxes[idx - 1].focus();
-      if (e.key === 'ArrowRight' && idx < passcodeBoxes.length - 1) passcodeBoxes[idx + 1].focus();
-      if (e.key === 'Enter') checkPasscode();
-    });
-  });
-
-  // Click envelope → show passcode (instead of opening directly)
-  envelope.addEventListener('click', showPasscodeModal);
-  envelope.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      showPasscodeModal();
-    }
-  });
-
-  closeBtn.addEventListener('click', closeLetter);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (letterPage.classList.contains('visible')) {
-        closeLetter();
-      } else if (passcodeModal.classList.contains('visible')) {
-        hidePasscodeModal();
-      }
-    }
-  });
-
-  // Click outside the card dismisses the passcode prompt
-  passcodeModal.addEventListener('click', (e) => {
-    if (e.target === passcodeModal && !checking) hidePasscodeModal();
-  });
-</script>
+<!-- Modular scripts — load order matters:
+     1) ambient-petals.js — purely decorative, no deps
+     2) envelope.js       — defines window.Envelope (open/close API)
+     3) passcode.js       — consumes window.Envelope on correct entry -->
+<script src="scripts/ambient-petals.js"></script>
+<script src="scripts/envelope.js"></script>
+<script src="scripts/passcode.js"></script>
 
 </body>
 </html>

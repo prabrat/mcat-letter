@@ -1,0 +1,189 @@
+/* ============================================================
+   letter-page.css — the full-screen letter view shown after
+                     the envelope finishes opening.
+                     Includes the aged paper, polaroid, and
+                     close button.
+   ============================================================ */
+
+.letter-page {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: safe center;
+  justify-content: safe center;
+  padding: 60px 20px;
+  background: rgba(255, 240, 245, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .6s ease;
+  z-index: 50;
+  overflow-y: auto;
+}
+.letter-page.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- Aged parchment paper ---------- */
+.paper {
+  position: relative;
+  margin: auto;
+  width: min(780px, 94vw);
+  background:
+    /* aging blotches in the corners */
+    radial-gradient(ellipse at 10% 12%, rgba(140, 90, 40, 0.10) 0%, transparent 22%),
+    radial-gradient(ellipse at 88% 18%, rgba(140, 90, 40, 0.08) 0%, transparent 18%),
+    radial-gradient(ellipse at 20% 88%, rgba(110, 70, 30, 0.10) 0%, transparent 24%),
+    radial-gradient(ellipse at 92% 78%, rgba(110, 70, 30, 0.09) 0%, transparent 22%),
+    /* fibrous fleck */
+    radial-gradient(circle at 12% 30%, rgba(120, 80, 40, 0.06) 0.5px, transparent 1px),
+    /* base parchment tone */
+    linear-gradient(180deg, #f5e6c4 0%, #ecd8a9 50%, #e6cf9a 100%);
+  padding: 72px 64px 80px;
+  border-radius: 4px;
+  box-shadow:
+    0 40px 80px -30px var(--shadow-deep),
+    0 15px 30px -10px var(--shadow-mid),
+    inset 0 0 60px rgba(120, 70, 30, 0.18),
+    inset 0 0 0 1px rgba(140, 90, 40, 0.25);
+  transform: translateY(40px) scale(0.95);
+  transition: transform .8s cubic-bezier(.2, .8, .2, 1) .2s;
+  overflow: hidden;
+  /* Uneven deckled edge — gives the paper torn/handmade feel */
+  clip-path: polygon(
+    0% 1.2%, 2% 0%, 8% 0.6%, 16% 0.2%, 24% 0.8%, 34% 0%, 44% 0.6%,
+    54% 0.1%, 64% 0.7%, 74% 0.2%, 84% 0.8%, 92% 0.3%, 98% 0.9%, 100% 0%,
+    99.4% 8%, 100% 18%, 99.2% 28%, 99.8% 40%, 99.3% 52%, 99.9% 64%,
+    99.2% 76%, 99.8% 86%, 99.4% 94%, 100% 100%,
+    94% 99.4%, 86% 99.9%, 76% 99.3%, 66% 99.8%, 56% 99.2%, 46% 99.9%,
+    36% 99.3%, 26% 99.8%, 16% 99.2%, 8% 99.9%, 2% 99.4%, 0% 100%,
+    0.6% 92%, 0.2% 82%, 0.8% 70%, 0.1% 58%, 0.7% 46%, 0.2% 34%,
+    0.8% 22%, 0.3% 12%
+  );
+}
+.letter-page.visible .paper { transform: translateY(0) scale(1); }
+
+/* Inner decorative double frame */
+.paper::before {
+  content: "";
+  position: absolute;
+  inset: 26px;
+  border: 1px solid var(--frame);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.paper::after {
+  content: "";
+  position: absolute;
+  inset: 32px;
+  border: 1px solid var(--frame-soft);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.paper .body {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  line-height: 1.95;
+  color: #3a2418;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+/* ---------- Signature ---------- */
+.signature {
+  margin-top: 36px;
+  font-family: var(--font-script);
+  font-size: 38px;
+  color: var(--ink-dark);
+  text-align: right;
+  line-height: 1.2;
+}
+.signature .yours {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 18px;
+  color: #5a3320;
+  margin-bottom: 4px;
+  text-align: right;
+}
+
+/* ---------- Polaroid ---------- */
+.polaroid {
+  display: block;
+  width: 240px;
+  margin: 36px auto 12px;
+  background: var(--paper-cream);
+  padding: 14px 14px 0;
+  box-shadow:
+    0 12px 25px -8px rgba(60, 30, 10, 0.35),
+    0 4px 10px rgba(60, 30, 10, 0.2);
+  transform: rotate(-3deg);
+  transition: transform .4s ease;
+  border: 1px solid rgba(120, 80, 40, 0.15);
+}
+.polaroid:hover { transform: rotate(-1deg) scale(1.02); }
+
+.polaroid .photo {
+  width: 100%;
+  height: 240px;
+  background: linear-gradient(135deg, #ffe1ea 0%, #ffd0c2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.polaroid .photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.polaroid .photo .placeholder {
+  font-family: var(--font-hand);
+  color: #b67a8a;
+  font-size: 18px;
+  text-align: center;
+  padding: 12px;
+}
+.polaroid .caption {
+  font-family: var(--font-hand);
+  font-size: 22px;
+  color: #5e3742;
+  text-align: center;
+  padding: 14px 6px 18px;
+}
+
+/* ---------- Close button (top-right, dismisses the letter view) ---------- */
+.close-btn {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(180, 60, 90, 0.3);
+  color: #8a2a44;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 22px;
+  font-family: var(--font-body);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transition: transform .2s ease, background .2s ease;
+  z-index: 60;
+}
+.close-btn:hover { transform: rotate(90deg); background: #fff; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .paper { padding: 40px 28px 50px; }
+  .paper .body { font-size: 17px; }
+  .signature { font-size: 30px; }
+}
