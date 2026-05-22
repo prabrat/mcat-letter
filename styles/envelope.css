@@ -99,7 +99,7 @@
 /* ---------- Wax seal ---------- */
 .wax-seal {
   position: absolute;
-  bottom: 18px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   width: 68px;
