@@ -9,7 +9,7 @@
    directly, it shows the passcode modal first.
    ---------------------------------------------------------------- */
 (function () {
-  const CORRECT_PASSCODE = '1207';
+  const CORRECT_PASSCODE = '0914';
   const SUCCESS_DELAY    = 700;
   const RESET_DELAY      = 1800;
   const PETAL_BURST      = 22;
